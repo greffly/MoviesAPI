@@ -7,14 +7,15 @@ const MOVIEDATA = require('./movie-data.json');
 
 const app = express();
 
-app.use(morgan('dev'));
+const morganSetting = process.env.NODE_ENV === 'production' ? 'tiny' : 'common';
+app.use(morgan(morganSetting));
 app.use(cors());
 
 app.use(function validateToken(req, res, next) {
   const apiToken = process.env.API_TOKEN;
   const authToken = req.get('Authorization');
 
-  if (!authToken || authoToken.split(' ')[1] !== apiToken) {
+  if (!authToken || authToken.split(' ')[1] !== apiToken) {
     return res.status(401).json({ error: 'Unauthorized Request' });
   }
   next();
@@ -38,16 +39,16 @@ app.get('/movie', function handleGetMovies(req, res) {
   }
 
   if (req.query.vote) {
-    response = response.filter(movie =>
-      movie.avg_vote.toLowerCase().includes(req.query.vote.toLowerCase())
+    response = response.filter(
+      movie => parseInt(movie.avg_vote) > parseInt(req.query.vote)
     );
   }
 
-  response.json(response);
+  res.json(response);
 });
 
-const port = 8100;
+const PORT = process.env.PORT || 8000;
 
-app.listen(port, () => {
-  console.log(`Server listening at port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server listening at port ${PORT}`);
 });
