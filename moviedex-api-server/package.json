@@ -3,9 +3,14 @@
   "version": "1.0.0",
   "description": "server",
   "main": "index.js",
+  "engines": {
+    "node": "12.6.0"
+  },
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "predeploy": "npm audit",
+    "deploy": "git push heroku master"
   },
   "author": "",
   "license": "ISC",
